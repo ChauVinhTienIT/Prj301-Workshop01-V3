@@ -28,7 +28,8 @@
                 <label for="password">Password:</label>
                 <input type="password" name="password" size="30" />
                 <br>${message}
-                <br><br>           
+                <br><br>
+                <input type="checkbox" name="rememberMe" value="true">Remember Me<br><br>
                 <button type="submit">Login</button>
             </form>
         </div>

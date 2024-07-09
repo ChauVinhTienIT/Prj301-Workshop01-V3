@@ -5,17 +5,26 @@
  */
 package controller;
 
+import blo.AccountAuthBLO;
 import blo.AccountBLO;
 import context.JWAView;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Account;
+import model.AccountAuth;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import tools.HashGenerationException;
+import tools.HashGeneratorUtils;
 
 /**
  *
@@ -51,6 +60,8 @@ public class UserLoginServlet extends HttpServlet {
         String userName = request.getParameter("account");
         String password = request.getParameter("password");
 
+        boolean rememberMe = "true".equals(request.getParameter("rememberMe"));
+
         AccountBLO accountBLO = new AccountBLO();
 
         Account user = accountBLO.checkLogin(userName, password);
@@ -59,6 +70,38 @@ public class UserLoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
+
+            if (rememberMe) {
+                try {
+                    AccountAuth newToken = new AccountAuth();
+                    String selector = RandomStringUtils.randomAlphabetic(12);
+                    String rawValidator = RandomStringUtils.randomAlphabetic(64);
+
+                    String hashedValidator = HashGeneratorUtils.generateSHA256(rawValidator);
+
+                    newToken.setSelector(selector);
+                    newToken.setValidator(hashedValidator);
+
+                    newToken.setAccountId(user);
+
+                    AccountAuthBLO accountAuthBLO = new AccountAuthBLO();
+                    accountAuthBLO.insertNewRec(newToken);
+
+                    Cookie cookieSelector = new Cookie("selector", selector);
+                    cookieSelector.setMaxAge(604800);
+
+                    Cookie cookieValidator = new Cookie("validator", rawValidator);
+                    cookieValidator.setMaxAge(604800);
+
+                    response.addCookie(cookieSelector);
+                    response.addCookie(cookieValidator);
+
+                } catch (HashGenerationException ex) {
+                    Logger.getLogger(UserLoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
             destPage = JWAView.ACCOUNT_MANAGER_JSP;
         } else {
             String message = "Invalid user name/password";
