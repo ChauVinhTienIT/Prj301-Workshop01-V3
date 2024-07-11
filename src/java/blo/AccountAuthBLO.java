@@ -6,6 +6,7 @@
 package blo;
 
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -18,7 +19,7 @@ import model.AccountAuth;
  *
  * @author Lenovo
  */
-public class AccountAuthBLO {
+public class AccountAuthBLO implements Accessible<AccountAuth>{
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("Prj301-WorkShop01-V3PU");
 
@@ -55,6 +56,7 @@ public class AccountAuthBLO {
         return auth;
     }
 
+    @Override
     public int insertRec(AccountAuth obj) {
         return this.persist(obj);
     }
@@ -71,6 +73,7 @@ public class AccountAuthBLO {
         return result;
     }
 
+    @Override
     public int updateRec(AccountAuth accountAuth) {
         int result = 0;
         EntityManager em = emf.createEntityManager();
@@ -103,5 +106,38 @@ public class AccountAuthBLO {
             em.close();
         }
         return auth;
+    }
+
+    @Override
+    public int deleteRec(AccountAuth obj) {
+        int result = 0;
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            AccountAuth account = em.find(AccountAuth.class, obj.getId());
+            em.remove(account);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+        return result;
+    }
+
+    @Override
+    public AccountAuth getObjectById(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AccountAuth getObjectById(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<AccountAuth> listAll() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

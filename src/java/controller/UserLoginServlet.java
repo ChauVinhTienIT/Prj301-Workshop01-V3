@@ -102,14 +102,13 @@ public class UserLoginServlet extends HttpServlet {
 
             }
 
-            destPage = JWAView.ACCOUNT_MANAGER_JSP;
+            destPage = "admin/product-manager";
         } else {
             String message = "Invalid user name/password";
             request.setAttribute("message", message);
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
-        dispatcher.forward(request, response);
+        response.sendRedirect(destPage);
 
     }
 

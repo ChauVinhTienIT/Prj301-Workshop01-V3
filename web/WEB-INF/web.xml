@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <filter>
+        <filter-name>AdminAuthenticationFilter</filter-name>
+        <filter-class>filter.AdminAuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminAuthenticationFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+        <url-pattern>/login.jsp</url-pattern>
+    </filter-mapping>
     <servlet>
         <servlet-name>AccountManagerServlet</servlet-name>
         <servlet-class>controller.AccountManagerServlet</servlet-class>
@@ -22,19 +31,20 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>AccountManagerServlet</servlet-name>
-        <url-pattern>/account-manager</url-pattern>
+        <url-pattern>/admin/account-manager</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProductManagerServlet</servlet-name>
-        <url-pattern>/product-manager</url-pattern>
+        <url-pattern>/admin/product-manager</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CategoryManagerServlet</servlet-name>
-        <url-pattern>/category-manager</url-pattern>
+        <url-pattern>/admin/category-manager</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserLogoutServlet</servlet-name>
         <url-pattern>/logout</url-pattern>
+        <url-pattern>/admin/logout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserLoginServlet</servlet-name>

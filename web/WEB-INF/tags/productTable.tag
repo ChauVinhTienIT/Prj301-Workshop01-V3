@@ -42,7 +42,7 @@
                 <tr>
                     <td>${product.getProductId()}</td>
                     <td>${product.getProductName()}</td>
-                    <td><img src=".${product.getProductImage()}" width="100" height="100" class="rounded mx-auto d-block"></td>
+                    <td><img src="./..${product.getProductImage()}" width="100" height="100" class="rounded mx-auto d-block"></td>
                     <td>${product.getBrief()}</td>
                     <td>${product.getPostedDate()}</td>
                     <td>${cateBLO.getObjectById(product.getTypeId().getTypeId()).getCategoryName()}</td>
