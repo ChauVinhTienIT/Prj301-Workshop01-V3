@@ -7,7 +7,6 @@ package controller;
 
 import blo.AccountAuthBLO;
 import blo.AccountBLO;
-import context.JWAView;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Account;
 import model.AccountAuth;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import tools.HashGenerationException;
 import tools.HashGeneratorUtils;
@@ -30,7 +28,7 @@ import tools.HashGeneratorUtils;
  *
  * @author Lenovo
  */
-public class UserLoginServlet extends HttpServlet {
+public class AdminLoginServlet extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -65,10 +63,9 @@ public class UserLoginServlet extends HttpServlet {
         AccountBLO accountBLO = new AccountBLO();
 
         Account user = accountBLO.checkLogin(userName, password);
-        String destPage = "login.jsp";
+        String destPage = "/adminLogin.jsp";
 
-        if (user != null && user.getRoleId().getRoleId() == 3) {
-            
+        if (user != null && user.getRoleId().getRoleId() == 1) {
             HttpSession session = request.getSession();
             session.removeAttribute("user");
             session.setAttribute("user", user);
@@ -103,17 +100,15 @@ public class UserLoginServlet extends HttpServlet {
                 }
 
             }
+            destPage = "product-manager";
             
-            destPage = "user-manager";
         } else {
-            System.out.println("Not User");
             String message = "Invalid user name/password";
             request.setAttribute("message", message);
         }
-
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
         dispatcher.forward(request, response);
-
     }
 
     /**

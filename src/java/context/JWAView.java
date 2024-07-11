@@ -11,7 +11,7 @@ package context;
  */
 public interface JWAView {
     public String APP_CONTEXT = "/Prj301-Workshop01-V2";
-    public String PRIVATE_FOLDER = "/private";
+    public String PRIVATE_FOLDER = "/admin";
     
     public String ERROR_JSP = "error.jsp";
     public String HEADER_JSP = "header.jspf";

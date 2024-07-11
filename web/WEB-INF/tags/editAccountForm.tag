@@ -56,6 +56,7 @@
         <select class="form-control" name="roleInSystem" >
             <option value="1">Administrator</option>
             <option value="2">Staff</option>
+            <option value="3">Customer</option>
         </select>
     </div>
 

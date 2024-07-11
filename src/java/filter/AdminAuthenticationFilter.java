@@ -52,31 +52,26 @@ public class AdminAuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpSession session = httpRequest.getSession(false);
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-
+        
         boolean isLoggedIn = false;
         if (session != null && session.getAttribute("user") != null) {
             Account user = (Account) session.getAttribute("user");
-
+            System.out.println(user);
             //Role = 1 : admin
             isLoggedIn = user.getRoleId().getRoleId() == 1;
         }
 
-        String loginURI = httpRequest.getContextPath() + "/login.jsp";
+        String loginURI = httpRequest.getContextPath() + "/adminLogin.jsp";
 
-        boolean isLoginRequest = httpRequest.getRequestURI().equals(loginURI);
+        boolean isLoginRequest = httpRequest.getRequestURI().equals(httpRequest.getContextPath() + "/admin/login");
 
-        boolean isLoginPage = httpRequest.getRequestURI().endsWith("login.jsp");
-
-        System.out.println("Login URI: " + loginURI);
-        System.out.println("Real Request: " + httpRequest.getRequestURI());
-        System.out.println("isLoginRequest: " + isLoginRequest);
-        System.out.println("isLoginPage: " + isLoginPage);
-        System.out.println("isLoggedIn: " + isLoggedIn);
+        boolean isLoginPage = httpRequest.getRequestURI().endsWith("adminLogin.jsp");
+        
 
         if (isLoggedIn && (isLoginRequest || isLoginPage)) {
             // the admin is already logged in and he's trying to login again
             // then forwards to the admin's homepage
-            httpResponse.sendRedirect("admin/product-manager");
+            httpResponse.sendRedirect("product-manager");
 
         } else if (isLoggedIn || isLoginRequest) {
             // continues the filter chain
