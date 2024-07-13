@@ -44,6 +44,8 @@ public class UserLoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+        dispatcher.forward(request, response);
     }
 
     /**
@@ -106,7 +108,6 @@ public class UserLoginServlet extends HttpServlet {
             
             destPage = "user-manager";
         } else {
-            System.out.println("Not User");
             String message = "Invalid user name/password";
             request.setAttribute("message", message);
         }

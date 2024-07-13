@@ -47,7 +47,9 @@ public class AccountAuthBLO implements Accessible<AccountAuth>{
         try {
             Query query = em.createNamedQuery(jpql);
             query.setParameter("selector", selector);
-            auth = (AccountAuth) query.getSingleResult();
+            if(!query.getResultList().isEmpty()){
+                auth = (AccountAuth) query.getSingleResult();
+            }
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
         } finally {
@@ -99,7 +101,9 @@ public class AccountAuthBLO implements Accessible<AccountAuth>{
         try {
             Query query = em.createNamedQuery(jpql);
             query.setParameter("accountId", accountId);
-            auth = (AccountAuth) query.getSingleResult();
+            if(!query.getResultList().isEmpty()){
+                auth = (AccountAuth) query.getSingleResult();
+            }
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
         } finally {

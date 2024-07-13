@@ -184,7 +184,10 @@ public class AccountBLO implements Accessible<Account> {
             Query query = em.createNamedQuery(jppl);
             query.setParameter("account", userName);
             query.setParameter("pass", password);
-            user = (Account)query.getSingleResult();
+            
+            if(!query.getResultList().isEmpty()){
+                user = (Account)query.getSingleResult();
+            }
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
         } finally {

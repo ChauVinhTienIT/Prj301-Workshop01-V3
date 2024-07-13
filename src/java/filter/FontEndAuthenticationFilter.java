@@ -5,10 +5,10 @@
  */
 package filter;
 
+import blo.AccountAuthBLO;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,9 +16,15 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Account;
+import model.AccountAuth;
+import org.apache.commons.lang3.RandomStringUtils;
+import tools.HashGenerationException;
+import tools.HashGeneratorUtils;
 
 /**
  *
@@ -36,28 +42,27 @@ public class FontEndAuthenticationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         httpRequest = (HttpServletRequest) request;
-
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpSession session = httpRequest.getSession(false);
+        
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
 
         if (path.startsWith("/admin/")) {
-            System.out.println("Start With Admin");
+            //Admin's functionpage
             chain.doFilter(request, response);
             return;
         }
 
-        HttpSession session = httpRequest.getSession(false);
+        boolean isLoggedIn = checkIsRememberMe(httpRequest, httpResponse, session, false);
 
-        
-        boolean isLoggedIn = false;
         if (session != null && session.getAttribute("user") != null) {
             Account user = (Account) session.getAttribute("user");
-
             //Role = 3 : customer
             isLoggedIn = user.getRoleId().getRoleId() == 3;
         }
 
-        String loginURI = httpRequest.getContextPath() + "/login.jsp";
-        boolean isLoginRequest = httpRequest.getRequestURI().equals(httpRequest.getContextPath() + "/login");
+        String loginURI = httpRequest.getContextPath() + "/login";
+        boolean isLoginRequest = httpRequest.getRequestURI().equals(loginURI);
         boolean isLoginPage = httpRequest.getRequestURI().endsWith("login.jsp");
 
         if (isLoggedIn && (isLoginRequest || isLoginPage)) {
@@ -78,18 +83,52 @@ public class FontEndAuthenticationFilter implements Filter {
         }
     }
 
-    private boolean isLoginRequired() {
-        String requestURL = httpRequest.getRequestURL().toString();
+    private boolean checkIsRememberMe(HttpServletRequest request, HttpServletResponse response, HttpSession session, boolean isLoggedIn) {
+        Cookie[] cookies = request.getCookies();
+        boolean isLogged = isLoggedIn;
+        if (!isLogged && cookies != null) {
+            String selector = "";
+            String rawValidator = "";
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("selector")) {
+                    selector = cookie.getValue();
+                } else if (cookie.getName().equals("validator")) {
+                    rawValidator = cookie.getValue();
+                }
+            }
+            if (!"".equals(selector) && !"".equals(rawValidator)) {
+                AccountAuthBLO accountAuthBLO = new AccountAuthBLO();
+                AccountAuth token = accountAuthBLO.findBySelector(selector);
 
-        for (String loginRequiredURL : loginRequiredURLs) {
-            if (requestURL.contains(loginRequiredURL)) {
-                return true;
+                if (token != null) {
+                    try {
+                        String hashedValidatorDatabase = token.getValidator();
+                        String hashedValidatorCookie = HashGeneratorUtils.generateSHA256(rawValidator);
+
+                        if (hashedValidatorCookie.equals(hashedValidatorDatabase)) {
+                            session = request.getSession();
+                            session.setAttribute("user", token.getAccountId());
+                            isLogged = true;
+                        }
+                    } catch (HashGenerationException ex) {
+                        Logger.getLogger(FontEndAuthenticationFilter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
-
-        return false;
+        return isLogged;
     }
 
+    private boolean isLoginRequired() {
+        boolean result = false;
+        String requestURL = httpRequest.getRequestURL().toString();
+        for (String loginRequiredURL : loginRequiredURLs) {
+            if (requestURL.contains(loginRequiredURL)) {
+                result = true;
+            }
+        }
+        return result;
+    }
 
     @Override
     public void destroy() {

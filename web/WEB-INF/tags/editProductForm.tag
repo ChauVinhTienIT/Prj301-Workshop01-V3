@@ -29,7 +29,7 @@
 
             <div class="form-group">
                 <label for="productImage">Product Image:</label><br>
-                <img src=".${existProduct.getProductImage()}" width="200" height="200">
+                <img src="./../${existProduct.getProductImage()}" width="200" height="200">
                 <input type = "file" name = "image" size = "50" /><br>
             </div>
 

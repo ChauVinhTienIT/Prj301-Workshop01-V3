@@ -57,7 +57,7 @@ public class AdminLoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String userName = request.getParameter("account");
         String password = request.getParameter("password");
-
+        System.out.println("Admin login");
         boolean rememberMe = "true".equals(request.getParameter("rememberMe"));
 
         AccountBLO accountBLO = new AccountBLO();
@@ -103,7 +103,7 @@ public class AdminLoginServlet extends HttpServlet {
             destPage = "product-manager";
             
         } else {
-            String message = "Invalid user name/password";
+            String message = "Invalid admin name/password";
             request.setAttribute("message", message);
         }
         

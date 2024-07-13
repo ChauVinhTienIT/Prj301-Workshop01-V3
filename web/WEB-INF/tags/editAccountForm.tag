@@ -7,6 +7,7 @@
 <%@tag description="put the tag description here" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@tag import="model.Account" %>
+<%@tag import="blo.RoleBLO" %>
 <%@tag import="tools.DateFormater" %>
 
 <%-- The list of normal or fragment attributes can be specified here: --%>
@@ -54,14 +55,16 @@
     <div class="form-group">
         <label for="roleInSystem">Role in system:</label>
         <select class="form-control" name="roleInSystem" >
-            <option value="1">Administrator</option>
-            <option value="2">Staff</option>
-            <option value="3">Customer</option>
+            <c:set var="roleBLO" value="<%= new RoleBLO()%>"></c:set>
+            <c:forEach var="role" items="${roleBLO.listAll()}">
+                <c:set var="roleId" value="${role.getRoleId()}"></c:set>
+                <option value="${roleId}" <c:if test="${account.getIntRoleId() == roleId}"> selected</c:if> >${role.getRoleName()}</option>
+            </c:forEach>
         </select>
     </div>
 
     <div class="checkbox">
-        <label><input type="checkbox" name="isUse" value="1">Is Active</label>
+        <label for="isUse">Is Active</label><input type="checkbox" name="isUse" value="1" <c:if test="${account.getIsUse()==true}">checked</c:if>>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>

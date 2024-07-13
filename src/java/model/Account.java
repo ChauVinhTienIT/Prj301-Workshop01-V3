@@ -201,6 +201,10 @@ public class Account implements Serializable {
     public Role getRoleId() {
         return roleId;
     }
+    
+    public int getIntRoleId() {
+        return roleId.getRoleId();
+    }
 
     public void setRoleId(Role roleId) {
         this.roleId = roleId;

@@ -5,10 +5,10 @@
  */
 package filter;
 
+import blo.AccountAuthBLO;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,23 +16,20 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Account;
+import model.AccountAuth;
+import tools.HashGenerationException;
+import tools.HashGeneratorUtils;
 
 /**
  *
  * @author Lenovo
  */
 public class AdminAuthenticationFilter implements Filter {
-
-    private static final boolean debug = true;
-
-    // The filter configuration object we are associated with.  If
-    // this value is null, this filter instance is not currently
-    // configured. 
-    private FilterConfig filterConfig = null;
 
     public AdminAuthenticationFilter() {
     }
@@ -50,28 +47,28 @@ public class AdminAuthenticationFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpSession session = httpRequest.getSession(false);
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpSession session = httpRequest.getSession(false);
         
-        boolean isLoggedIn = false;
+        boolean isLoggedIn = checkIsRememberMe(httpRequest, httpResponse, session, false);
         if (session != null && session.getAttribute("user") != null) {
             Account user = (Account) session.getAttribute("user");
-            System.out.println(user);
             //Role = 1 : admin
             isLoggedIn = user.getRoleId().getRoleId() == 1;
         }
-
-        String loginURI = httpRequest.getContextPath() + "/adminLogin.jsp";
-
-        boolean isLoginRequest = httpRequest.getRequestURI().equals(httpRequest.getContextPath() + "/admin/login");
-
-        boolean isLoginPage = httpRequest.getRequestURI().endsWith("adminLogin.jsp");
         
+
+        String loginURI = httpRequest.getContextPath() + "/admin/login";
+
+        boolean isLoginRequest = httpRequest.getRequestURI().equals(loginURI);
+
+        boolean isLoginPage = httpRequest.getRequestURI().endsWith("login.jsp");
 
         if (isLoggedIn && (isLoginRequest || isLoginPage)) {
             // the admin is already logged in and he's trying to login again
             // then forwards to the admin's homepage
-            httpResponse.sendRedirect("product-manager");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/product-manager");
+            dispatcher.forward(request, response);
 
         } else if (isLoggedIn || isLoginRequest) {
             // continues the filter chain
@@ -81,9 +78,47 @@ public class AdminAuthenticationFilter implements Filter {
         } else {
             // the admin is not logged in, so authentication is required
             // forwards to the Login page
-            httpResponse.sendRedirect(loginURI);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+            dispatcher.forward(request, response);
         }
 
+    }
+    
+    
+    private boolean checkIsRememberMe(HttpServletRequest request, HttpServletResponse response, HttpSession session, boolean isLoggedIn) {
+        Cookie[] cookies = request.getCookies();
+        boolean isLogged = isLoggedIn;
+        if (!isLogged && cookies != null) {
+            String selector = "";
+            String rawValidator = "";
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("selector")) {
+                    selector = cookie.getValue();
+                } else if (cookie.getName().equals("validator")) {
+                    rawValidator = cookie.getValue();
+                }
+            }
+            if (!"".equals(selector) && !"".equals(rawValidator)) {
+                AccountAuthBLO accountAuthBLO = new AccountAuthBLO();
+                AccountAuth token = accountAuthBLO.findBySelector(selector);
+
+                if (token != null) {
+                    try {
+                        String hashedValidatorDatabase = token.getValidator();
+                        String hashedValidatorCookie = HashGeneratorUtils.generateSHA256(rawValidator);
+
+                        if (hashedValidatorCookie.equals(hashedValidatorDatabase)) {
+                            session = request.getSession();
+                            session.setAttribute("user", token.getAccountId());
+                            isLogged = true;
+                        }
+                    } catch (HashGenerationException ex) {
+                        Logger.getLogger(FontEndAuthenticationFilter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        return isLogged;
     }
 
     /**
