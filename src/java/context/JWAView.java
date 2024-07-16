@@ -16,8 +16,9 @@ public interface JWAView {
     public String ERROR_JSP = "error.jsp";
     public String HEADER_JSP = "header.jspf";
     public String LOGIN_JSP = "login.jsp";
-    public String HOME_JSP = "home.jsp";
-    public String ITEM_JSP = "shopItem.jsp";
+    public String HOME_JSP = "index.jsp";
+    public String ITEM_JSP = "product-single.jsp";
+    public String CART_JSP = "viewCart.jsp";
   
     public String ACCOUNT_MANAGER_JSP = String.format("%s/%s", PRIVATE_FOLDER, "accountManager.jsp");
     public String CATEGORY_MANAGER_JSP = String.format("%s/%s", PRIVATE_FOLDER, "categoryManager.jsp");

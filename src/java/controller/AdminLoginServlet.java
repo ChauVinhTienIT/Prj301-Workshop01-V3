@@ -57,15 +57,15 @@ public class AdminLoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String userName = request.getParameter("account");
         String password = request.getParameter("password");
-        System.out.println("Admin login");
+        
         boolean rememberMe = "true".equals(request.getParameter("rememberMe"));
 
         AccountBLO accountBLO = new AccountBLO();
 
         Account user = accountBLO.checkLogin(userName, password);
-        String destPage = "/adminLogin.jsp";
+        String destPage = "login.jsp";
 
-        if (user != null && user.getRoleId().getRoleId() == 1) {
+        if (user != null && (user.getRoleId().getRoleId() == 1 || user.getRoleId().getRoleId() == 2)) {
             HttpSession session = request.getSession();
             session.removeAttribute("user");
             session.setAttribute("user", user);

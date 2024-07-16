@@ -15,48 +15,54 @@
 
 <c:if test="${not empty categoryList}">
 
-    <div class="table-title">
+    <div class="container-lg">
         <div class="row">
-            <h2>Category Manager</h2>
-            <a href="category-manager?action=new" class="btn btn-success" data-toggle="modal"><span>Add New Category</span></a>
+            <div class="col-sm-8"><h2>Category <b>Details</b></h2></div>
+        </div>
+        <div class="table-responsive">
+            <div class="table-responsive">
+                <div class="table-title">
+                    <a href="category-manager?action=new" type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i>Add New Category</a>
+                </div>
+                <br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <tr>
+                            <th>Type ID</th>
+                            <th>Category Name</th>
+                            <th>Memo</th>
+                            <th>Action</th>
+                        </tr>
+                        </tr>
+                    </thead>
+                    <c:forEach items="${categoryList}" var="category">
+                        <tr>
+                            <td>${category.getTypeId()}</td>
+                            <td>${category.getCategoryName()}</td>
+                            <td>${category.getMemo()}</td>
+                            <td>
+
+
+                                <c:url value = "category-manager" var = "editUrl">
+                                    <c:param name = "action" value = "edit"/>
+                                    <c:param name = "typeId" value = "${category.getTypeId()}"/>
+                                </c:url>
+
+                                <c:url value = "category-manager" var = "deleteUrl">
+                                    <c:param name = "action" value = "delete"/>
+                                    <c:param name = "typeId" value = "${category.getTypeId()}"/>
+                                </c:url>
+
+                                <a href="${editUrl}" class="edit" data-toggle="modal"><i class="material-icons">&#xE254;</i></a> 
+                                <a href="${deleteUrl}"class="delete" data-toggle="modal"><i class="material-icons">&#xE872;</i></a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+
+                </table>
+            </div>
         </div>
     </div>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Type ID</th>
-                <th>Category Name</th>
-                <th>Memo</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            <c:forEach items="${categoryList}" var="category">
-                <tr>
-                    <td>${category.getTypeId()}</td>
-                    <td>${category.getCategoryName()}</td>
-                    <td>${category.getMemo()}</td>
-                    <td>
-
-
-                        <c:url value = "category-manager" var = "editUrl">
-                            <c:param name = "action" value = "edit"/>
-                            <c:param name = "typeId" value = "${category.getTypeId()}"/>
-                        </c:url>
-
-                        <c:url value = "category-manager" var = "deleteUrl">
-                            <c:param name = "action" value = "delete"/>
-                            <c:param name = "typeId" value = "${category.getTypeId()}"/>
-                        </c:url>
-
-                        <a href="${editUrl}" class="edit" data-toggle="modal">edit</a> 
-                        <a href="${deleteUrl}"class="delete" data-toggle="modal">delete</a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
 
 </c:if>

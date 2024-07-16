@@ -21,12 +21,14 @@
       </listener>
     -->
   <tag>
-    <name>WelcomeTagHandler</name>
-    <tag-class>customTag.WelcomeTagHandler</tag-class>
-    <body-content>empty</body-content>
+    <name>PriceFormaterHandler</name>
+    <tag-class>customTag.PriceFormaterHandler</tag-class>
+    <body-content>scriptless</body-content>
     <attribute>
-      <name>userName</name>
-      <required>false</required>
+      <name>price</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>int</type>
     </attribute>
   </tag>
 </taglib>

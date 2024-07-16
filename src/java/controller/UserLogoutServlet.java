@@ -7,14 +7,13 @@ package controller;
 
 import blo.AccountAuthBLO;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.AccountAuth;
 
 /**
@@ -36,24 +35,25 @@ public class UserLogoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getSession().removeAttribute("user");
-
+        request.getSession().removeAttribute("Cart");
+        
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
-            String selector = "";
+            List<String> selectors = new ArrayList<>();
 
             for (Cookie aCookie : cookies) {
                 if (aCookie.getName().equals("selector")) {
-                    selector = aCookie.getValue();
+                    selectors.add(aCookie.getValue());
                 }
             }
 
-            if (!selector.isEmpty()) {
+            if (!selectors.isEmpty()) {
                 // delete token from database
                 AccountAuthBLO accountAuthBLO = new AccountAuthBLO();
-                AccountAuth token = accountAuthBLO.findBySelector(selector);
-
-                if (token != null) {
+                for (String selector : selectors) {
+                    AccountAuth token = accountAuthBLO.findBySelector(selector);
+                    if (token != null) {
                     accountAuthBLO.deleteRec(token);
 
                     Cookie cookieSelector = new Cookie("selector", "");
@@ -64,7 +64,9 @@ public class UserLogoutServlet extends HttpServlet {
                     
                     response.addCookie(cookieSelector);
                     response.addCookie(cookieValidator);
+                    }
                 }
+                
             }
         }
 

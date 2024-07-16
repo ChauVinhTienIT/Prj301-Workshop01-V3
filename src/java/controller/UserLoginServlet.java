@@ -106,7 +106,7 @@ public class UserLoginServlet extends HttpServlet {
 
             }
             
-            destPage = "user-manager";
+            destPage = "home";
         } else {
             String message = "Invalid user name/password";
             request.setAttribute("message", message);

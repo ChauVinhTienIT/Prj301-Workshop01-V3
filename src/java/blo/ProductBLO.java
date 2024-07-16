@@ -3,12 +3,14 @@ package blo;
 
 import blo.Accessible;
 import java.util.List;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import model.Categorie;
 import model.Product;
 
 /*
@@ -130,6 +132,36 @@ public class ProductBLO implements Accessible<Product>{
         }
         return result;
     }
-
+    
+    public List<Product> listByCategory(Categorie category){
+        EntityManager em = emf.createEntityManager();
+        String jpql = "Product.findByCategorie";
+        List result = null;
+        try{
+            Query query = em.createNamedQuery(jpql);
+            query.setParameter("typeId", category);
+            result = query.getResultList();
+        }catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+        } finally {
+            em.close();
+        }
+        return result;
+    }
+    
+    public List<Product> listIfDiscount(){
+        EntityManager em = emf.createEntityManager();
+        String jpql = "SELECT p FROM Product p WHERE p.discount != 0 ";
+        List result = null;
+        try{
+            Query query = em.createQuery(jpql);
+            result = query.getResultList();
+        }catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+        } finally {
+            em.close();
+        }
+        return result;
+    }
     
 }

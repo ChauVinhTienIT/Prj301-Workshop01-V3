@@ -7,6 +7,8 @@ package filter;
 
 import blo.AccountAuthBLO;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.Filter;
@@ -18,7 +20,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Account;
 import model.AccountAuth;
@@ -47,16 +48,15 @@ public class AdminAuthenticationFilter implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = httpRequest.getSession(false);
-        
-        boolean isLoggedIn = checkIsRememberMe(httpRequest, httpResponse, session, false);
+        HttpSession session = httpRequest.getSession();
+
+        boolean isLoggedIn = checkIsRememberMe(httpRequest, session, false);
+
         if (session != null && session.getAttribute("user") != null) {
             Account user = (Account) session.getAttribute("user");
-            //Role = 1 : admin
-            isLoggedIn = user.getRoleId().getRoleId() == 1;
+            //Role = 1,2 : admin
+            isLoggedIn = (user.getRoleId().getRoleId() == 1 || user.getRoleId().getRoleId() == 2);
         }
-        
 
         String loginURI = httpRequest.getContextPath() + "/admin/login";
 
@@ -83,12 +83,12 @@ public class AdminAuthenticationFilter implements Filter {
         }
 
     }
-    
-    
-    private boolean checkIsRememberMe(HttpServletRequest request, HttpServletResponse response, HttpSession session, boolean isLoggedIn) {
+
+    private boolean checkIsRememberMe(HttpServletRequest request, HttpSession session, boolean isLoggedIn) {
         Cookie[] cookies = request.getCookies();
         boolean isLogged = isLoggedIn;
         if (!isLogged && cookies != null) {
+            Map<String, String> tokens = new HashMap<>();
             String selector = "";
             String rawValidator = "";
             for (Cookie cookie : cookies) {
@@ -97,23 +97,29 @@ public class AdminAuthenticationFilter implements Filter {
                 } else if (cookie.getName().equals("validator")) {
                     rawValidator = cookie.getValue();
                 }
+                tokens.put(selector, rawValidator);
             }
-            if (!"".equals(selector) && !"".equals(rawValidator)) {
-                AccountAuthBLO accountAuthBLO = new AccountAuthBLO();
-                AccountAuth token = accountAuthBLO.findBySelector(selector);
 
-                if (token != null) {
-                    try {
-                        String hashedValidatorDatabase = token.getValidator();
-                        String hashedValidatorCookie = HashGeneratorUtils.generateSHA256(rawValidator);
+            for (Map.Entry<String, String> entry : tokens.entrySet()) {
+                selector = entry.getKey();
+                rawValidator = entry.getValue();
+                
+                if (!"".equals(selector) && !"".equals(rawValidator)) {
+                    AccountAuthBLO accountAuthBLO = new AccountAuthBLO();
+                    AccountAuth token = accountAuthBLO.findBySelector(selector);
 
-                        if (hashedValidatorCookie.equals(hashedValidatorDatabase)) {
-                            session = request.getSession();
-                            session.setAttribute("user", token.getAccountId());
-                            isLogged = true;
+                    if (token != null) {
+                        try {
+                            String hashedValidatorDatabase = token.getValidator();
+                            String hashedValidatorCookie = HashGeneratorUtils.generateSHA256(rawValidator);
+
+                            if (hashedValidatorCookie.equals(hashedValidatorDatabase)) {
+                                session.setAttribute("user", token.getAccountId());
+                                isLogged = true;
+                            }
+                        } catch (HashGenerationException ex) {
+                            Logger.getLogger(FontEndAuthenticationFilter.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } catch (HashGenerationException ex) {
-                        Logger.getLogger(FontEndAuthenticationFilter.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

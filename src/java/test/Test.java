@@ -6,9 +6,17 @@
 package test;
 
 import blo.AccountBLO;
+import blo.ProductBLO;
 import blo.RoleBLO;
+import blo.CategoryBLO;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import model.Account;
+import model.Categorie;
+import model.Product;
 import model.Role;
 
 /**
@@ -21,27 +29,18 @@ public class Test{
     }
     
     private static void testAccount(){
-        AccountBLO accountBLO = new AccountBLO();
-        RoleBLO roleBLO = new RoleBLO();
-        List<Account> result = accountBLO.listAll();
+        System.out.println(formatPrice(1000));
+    }
+    
+    private static String formatPrice(int price) {
+        Locale locale = new Locale("vi", "VND");
+        Currency currency = Currency.getInstance("VND");
+        DecimalFormatSymbols df = DecimalFormatSymbols.getInstance(locale);
+        df.setCurrency(currency);
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+        numberFormat.setCurrency(currency);
         
-        System.out.println("Current Account List:");
-        for (Account accounts : result) {
-            System.out.println(String.format("%s, %s, %s",accounts.getAccountId(), accounts.getAccount(), accounts.getPass()));
-        }
-        
-        System.out.println(accountBLO.getObjectByAccount("admin"));
-//        Role newRole = roleBLO.getObjectById(1);
-//        
-//        Account newAcc = new Account();
-//        newAcc.setAccount("staff1");
-//        newAcc.setPass("123");
-//        newAcc.setFirstName("Tien");
-//        newAcc.setLastName("Chau Vinh");
-//        accountBLO.insertRec(newAcc);
-//        
-//        newAcc.setPhone("0933935584");
-//        newAcc.setRoleId(newRole);
-//        accountBLO.updateRec(newAcc);
+        System.out.println(numberFormat.format(price));
+        return numberFormat.format(price);
     }
 }

@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Product.findByPostedDate", query = "SELECT p FROM Product p WHERE p.postedDate = :postedDate")
     , @NamedQuery(name = "Product.findByUnit", query = "SELECT p FROM Product p WHERE p.unit = :unit")
     , @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price")
-    , @NamedQuery(name = "Product.findByDiscount", query = "SELECT p FROM Product p WHERE p.discount = :discount")})
+    , @NamedQuery(name = "Product.findByDiscount", query = "SELECT p FROM Product p WHERE p.discount = :discount")
+    ,@NamedQuery(name = "Product.findByCategorie", query = "SELECT p FROM Product p WHERE p.typeId = :typeId")})
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -145,10 +146,21 @@ public class Product implements Serializable {
     public Integer getPrice() {
         return price;
     }
+    
+    public Integer getPriceAfterDiscount(){
+        double result = this.price;
+        int price = (int)result;
+        if(this.discount > 0){
+            result = this.price - (this.price * this.discount * 0.001);
+            price = (int)result;
+        }
+        return price;
+    }
 
     public void setPrice(Integer price) {
         this.price = price;
     }
+   
 
     public Integer getDiscount() {
         return discount;
