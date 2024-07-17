@@ -24,6 +24,7 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import model.Account;
 import model.Categorie;
@@ -147,12 +148,17 @@ public class ProductManagerServlet extends HttpServlet {
         String productId = request.getParameter("productId");
         Product toDelete = productBLO.getObjectById(productId);
         int result = productBLO.deleteRec(toDelete);
-        response.sendRedirect("product-manager?action=list");
+        response.sendRedirect(JWAView.PRODUCT_MANAGER_SERVLET + "?action=list");
     }
     
     private void insertProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException{
         request.setCharacterEncoding("UTF-8");
         
+        HttpSession session = request.getSession();
+        Account user = null;
+        if(session != null && session.getAttribute("user") != null){
+            user = (Account)session.getAttribute("user");
+        }
         
         String productId = request.getParameter("productId");
         String productName = request.getParameter("productName");
@@ -166,8 +172,6 @@ public class ProductManagerServlet extends HttpServlet {
         int typeId = Integer.parseInt(typeIdRaw);
         int price = Integer.parseInt(priceRaw);
         int discount = Integer.parseInt(discountRaw);
-        
-        Account currentUser = accountBLO.getObjectByAccount("admin");
         
         Date postedDateRaw = new Date();
         java.sql.Date postedDate = new java.sql.Date(postedDateRaw.getTime());
@@ -189,11 +193,11 @@ public class ProductManagerServlet extends HttpServlet {
                 break;
         }
         
-        Product newProduct = new Product(productId, productName, productImage, brief, postedDate, unit, price, discount, currentUser, categorie);
+        Product newProduct = new Product(productId, productName, productImage, brief, postedDate, unit, price, discount, user, categorie);
         
         int result = productBLO.insertRec(newProduct);
 
-        response.sendRedirect("product-manager?action=list");
+        response.sendRedirect(JWAView.PRODUCT_MANAGER_SERVLET + "?action=list");
     }
 
     private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -235,6 +239,7 @@ public class ProductManagerServlet extends HttpServlet {
 
     private void updateProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
         request.setCharacterEncoding("UTF-8");
+        
         String productId = request.getParameter("productId");
         String productName = request.getParameter("productName");
         String brief = request.getParameter("brief");
@@ -249,6 +254,7 @@ public class ProductManagerServlet extends HttpServlet {
         int discount = Integer.parseInt(discountRaw);
         
         Account currentUser = accountBLO.getObjectByAccount("admin");
+        
         Date postedDateRaw = new Date();
         java.sql.Date postedDate = new java.sql.Date(postedDateRaw.getTime());
         

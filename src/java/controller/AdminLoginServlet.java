@@ -7,8 +7,8 @@ package controller;
 
 import blo.AccountAuthBLO;
 import blo.AccountBLO;
+import context.JWAView;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -63,7 +63,7 @@ public class AdminLoginServlet extends HttpServlet {
         AccountBLO accountBLO = new AccountBLO();
 
         Account user = accountBLO.checkLogin(userName, password);
-        String destPage = "login.jsp";
+        String destPage = JWAView.LOGIN_JSP;
 
         if (user != null && (user.getRoleId().getRoleId() == 1 || user.getRoleId().getRoleId() == 2)) {
             HttpSession session = request.getSession();
@@ -100,7 +100,7 @@ public class AdminLoginServlet extends HttpServlet {
                 }
 
             }
-            destPage = "product-manager";
+            destPage = JWAView.PRODUCT_MANAGER_SERVLET;
             
         } else {
             String message = "Invalid admin name/password";

@@ -65,7 +65,6 @@ public class ProductBLO implements Accessible<Product>{
             product.setTypeId(obj.getTypeId());
             product.setPrice(obj.getPrice());
             product.setDiscount(obj.getDiscount());
-            product.setAccountId(obj.getAccountId());
             product.setPostedDate(obj.getPostedDate());
             product.setUnit(obj.getUnit());
             

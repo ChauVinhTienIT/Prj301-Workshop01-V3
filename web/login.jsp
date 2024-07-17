@@ -62,6 +62,7 @@
             <br>
             <div class="text-center">
               <input type="checkbox" name="rememberMe"  value="true">Remember Me<br><br>
+              <p class="mt-20">Does not have an account yet?<a href="signin.jsp">Register</a></p>
             </div>
           </form>
         </div>

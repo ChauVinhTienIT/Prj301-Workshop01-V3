@@ -20,7 +20,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.Account;
 import model.AccountAuth;
@@ -43,7 +42,6 @@ public class FontEndAuthenticationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession();
         
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
@@ -57,9 +55,7 @@ public class FontEndAuthenticationFilter implements Filter {
         boolean isLoggedIn = checkIsRememberMe(httpRequest, session, false);
 
         if (session != null && session.getAttribute("user") != null) {
-            Account user = (Account) session.getAttribute("user");
-            //Role = 3 : customer
-            isLoggedIn = user.getRoleId().getRoleId() == 3;
+            isLoggedIn = true;
         }
 
         String loginURI = httpRequest.getContextPath() + "/login";

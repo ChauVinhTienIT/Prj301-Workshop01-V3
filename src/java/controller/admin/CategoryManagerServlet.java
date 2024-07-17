@@ -127,11 +127,10 @@ public class CategoryManagerServlet extends HttpServlet {
         String memo = request.getParameter("memo");
         
         Categorie newCategory = new Categorie(cateName, memo);
-        
 
         int result = categoryBLO.insertRec(newCategory);
 
-        response.sendRedirect("category-manager?action=list");
+        response.sendRedirect(JWAView.CATEGORY_MANAGER_SERVLET + "?action=list");
     }
 
     private void listCategory(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -147,7 +146,7 @@ public class CategoryManagerServlet extends HttpServlet {
         
         Categorie toDelete = categoryBLO.getObjectById(typeId);
         categoryBLO.deleteRec(toDelete);
-        response.sendRedirect("category-manager?action=list");
+        response.sendRedirect(JWAView.CATEGORY_MANAGER_SERVLET + "?action=list");
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -176,6 +175,6 @@ public class CategoryManagerServlet extends HttpServlet {
         
         int result = categoryBLO.updateRec(updateCategory);
 
-        response.sendRedirect("category-manager?action=list");
+        response.sendRedirect(JWAView.CATEGORY_MANAGER_SERVLET + "?action=list");
     }
 }

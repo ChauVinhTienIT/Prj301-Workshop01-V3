@@ -1,19 +1,12 @@
-<%-- 
-    Document   : viewCart.jsp
-    Created on : Jul 16, 2024, 5:32:49 PM
-    Author     : Lenovo
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="mytag" uri="/WEB-INF/tlds/customtag_library.tld" %>
 <%@page import="blo.CategoryBLO" %>
+<%@page import="model.Account" %>
 <%@page import="model.Product" %>
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- Basic Page Needs
-  ================================================== -->
         <meta charset="utf-8">
         <title>Aviato - Cart</title>
 
@@ -50,7 +43,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="content">
-                            <h1 class="page-name">Cart</h1>
+                            <h1 class="page-name">${sessionScope.user.getFirstName()}'s Shopping Cart</h1>
                         </div>
                     </div>
                 </div>
@@ -89,16 +82,18 @@
                                                             <td class="">${item.getQuantity()}</td>
                                                             <c:set value="${item.getQuantity() * item.getProduct().getPrice()}" var="total"></c:set>
                                                             <td class=""><mytag:PriceFormaterHandler price="${total}"></mytag:PriceFormaterHandler></td>
-                                                            <td class="">
-                                                                <input class="product-remove" type="submit" name="action" value="remove" >
-                                                                <input type="text" name="productId" value="${item.getProduct().getProductId()}" hidden="">
+                                                                <td class="">
+                                                                    <input class="product-remove" type="submit" name="action" value="remove" >
+                                                                    <input type="text" name="productId" value="${item.getProduct().getProductId()}" hidden="">
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
                                                 </c:if>
                                             </tbody>
-
+                                            
                                         </table>
+                                        <h3>Total: <mytag:PriceFormaterHandler price="${sessionScope.Cart.totalPrice()}"></mytag:PriceFormaterHandler></h3>
+                                        <a href="#" class="btn btn-main pull-right">Checkout</a>
                                     </form>
                                 </div>
                             </div>
@@ -135,8 +130,6 @@
 
         <!-- Main Js File -->
         <script src="js/script.js"></script>
-
-
 
     </body>
 </html>

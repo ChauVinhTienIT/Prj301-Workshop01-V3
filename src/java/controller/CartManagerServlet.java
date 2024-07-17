@@ -44,7 +44,6 @@ public class CartManagerServlet extends HttpServlet {
         if (request.getParameter("action") != null) {
             action = request.getParameter("action");
         }
-
         try {
             switch (action) {
                 case "show":
@@ -158,6 +157,5 @@ public class CartManagerServlet extends HttpServlet {
     private void updateItem(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }

@@ -10,19 +10,25 @@ package context;
  * @author Lenovo
  */
 public interface JWAView {
-    public String APP_CONTEXT = "/Prj301-Workshop01-V2";
-    public String PRIVATE_FOLDER = "/admin";
+    public String APP_CONTEXT = "/SE183243_ChauVinhTien_WS2";
+    public String ADMIN_PAGE = "/admin";
     
-    public String ERROR_JSP = "error.jsp";
-    public String HEADER_JSP = "header.jspf";
     public String LOGIN_JSP = "login.jsp";
-    public String HOME_JSP = "index.jsp";
+    public String HOME_JSP = "home.jsp";
     public String ITEM_JSP = "product-single.jsp";
     public String CART_JSP = "viewCart.jsp";
   
-    public String ACCOUNT_MANAGER_JSP = String.format("%s/%s", PRIVATE_FOLDER, "accountManager.jsp");
-    public String CATEGORY_MANAGER_JSP = String.format("%s/%s", PRIVATE_FOLDER, "categoryManager.jsp");
-    public String PRODUCT_MANAGER_JSP = String.format("%s/%s", PRIVATE_FOLDER, "productManager.jsp");
+    public String ACCOUNT_MANAGER_JSP = String.format("%s/%s", ADMIN_PAGE, "accountManager.jsp");
+    public String CATEGORY_MANAGER_JSP = String.format("%s/%s", ADMIN_PAGE, "categoryManager.jsp");
+    public String PRODUCT_MANAGER_JSP = String.format("%s/%s", ADMIN_PAGE, "productManager.jsp");
     
     
+    
+    public String ACCOUNT_MANAGER_SERVLET = String.format("%s/%s", ADMIN_PAGE, "account-manager");
+    public String PRODUCT_MANAGER_SERVLET = String.format("%s/%s", ADMIN_PAGE, "product-manager");
+    public String CATEGORY_MANAGER_SERVLET = String.format("%s/%s", ADMIN_PAGE, "catregory-manager");
+    
+    public String CART_MANAGER_SERVLET = "cart-manager";
+    
+    public String HOME_PAGE_SERVLET = "home";
 }

@@ -67,9 +67,9 @@ public class UserLoginServlet extends HttpServlet {
         AccountBLO accountBLO = new AccountBLO();
 
         Account user = accountBLO.checkLogin(userName, password);
-        String destPage = "login.jsp";
+        String destPage = JWAView.LOGIN_JSP;
 
-        if (user != null && user.getRoleId().getRoleId() == 3) {
+        if (user != null) {
             
             HttpSession session = request.getSession();
             session.removeAttribute("user");
@@ -106,7 +106,7 @@ public class UserLoginServlet extends HttpServlet {
 
             }
             
-            destPage = "home";
+            destPage = JWAView.HOME_PAGE_SERVLET;
         } else {
             String message = "Invalid user name/password";
             request.setAttribute("message", message);

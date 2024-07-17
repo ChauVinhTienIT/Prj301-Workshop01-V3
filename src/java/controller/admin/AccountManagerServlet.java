@@ -9,10 +9,8 @@ import blo.AccountBLO;
 import blo.RoleBLO;
 import context.JWAView;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -150,7 +148,7 @@ public class AccountManagerServlet extends HttpServlet {
 
         int result = accountBLO.insertRec(newAccount);
 
-        response.sendRedirect("account-manager?action=list");
+        response.sendRedirect(JWAView.ACCOUNT_MANAGER_SERVLET + "?action=list");
     }
 
     private void listAccount(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, SQLException {
@@ -164,7 +162,7 @@ public class AccountManagerServlet extends HttpServlet {
         String accountIdRaw = request.getParameter("accountId");
         int  accountId= Integer.parseInt(accountIdRaw);
         accountBLO.deleteRec(accountId);
-        response.sendRedirect("account-manager?action=list");
+        response.sendRedirect(JWAView.ACCOUNT_MANAGER_SERVLET + "?action=list");
     }
     
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException{
@@ -192,8 +190,6 @@ public class AccountManagerServlet extends HttpServlet {
         String roleInSystemRaw = request.getParameter("roleInSystem");
         String isUseRaw = request.getParameter("isUse");
         
-        System.out.println("BDR: " + birthDayRaw);
-        
       
         java.util.Date birthDay = DateFormater.stringToJUDate(birthDayRaw);
         
@@ -206,16 +202,15 @@ public class AccountManagerServlet extends HttpServlet {
         Account updateAccount = new Account(account, phone, lastName, firstName, birthDay, gender, phone, isUse, role);
         updateAccount.setAccountId(accountId);
         
-        
         int result = accountBLO.updateRec(updateAccount);
 
-        response.sendRedirect("account-manager?action=list");
+        response.sendRedirect(JWAView.ACCOUNT_MANAGER_SERVLET + "?action=list");
     }
     
     private void changeStatus(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException{
         String accountIdRaw = request.getParameter("accountId");
         int  accountId= Integer.parseInt(accountIdRaw);
         accountBLO.updateIsUse(accountId);
-        response.sendRedirect("account-manager?action=list");
+        response.sendRedirect(JWAView.ACCOUNT_MANAGER_SERVLET + "?action=list");
     }
 }

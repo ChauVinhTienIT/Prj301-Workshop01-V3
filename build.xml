@@ -7,8 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="Prj301-WorkShop01-V3" default="default" basedir=".">
-    <description>Builds, tests, and runs the project Prj301-WorkShop01-V3.</description>
+<project name="SE183243_ChauVinhTien_WS2" default="default" basedir=".">
+    <description>Builds, tests, and runs the project SE183243_ChauVinhTien_WS2.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
 

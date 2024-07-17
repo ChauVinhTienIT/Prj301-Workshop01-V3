@@ -1,16 +1,8 @@
-
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="mytag" uri="/WEB-INF/tlds/customtag_library.tld" %>
 <%@page import="blo.CategoryBLO" %>
 <%@page import="model.Product" %>
 <!DOCTYPE html>
-
-<!--
- // WEBSITE: https://themefisher.com
- // TWITTER: https://twitter.com/themefisher
- // FACEBOOK: https://www.facebook.com/themefisher
- // GITHUB: https://github.com/themefisher/
--->
 
 <html lang="en">
     <head>
@@ -96,6 +88,7 @@
                 </div>
 
         </section>
+                                
         <section class="products related-products section">
             <div class="container">
                 <div class="row">
@@ -145,41 +138,6 @@
             </div>
         </section>
 
-
-
-        <!-- Modal -->
-        <div class="modal product-modal fade" id="product-modal">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <i class="tf-ion-close"></i>
-            </button>
-            <div class="modal-dialog " role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="modal-image">
-                                    <img class="img-responsive" src="images/shop/products/modal-product.jpg" />
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="product-short-details">
-                                    <h2 class="product-title">GM Pendant, Basalt Grey</h2>
-                                    <p class="product-price">$200</p>
-                                    <p class="product-short-description">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem iusto nihil cum. Illo laborum numquam rem aut officia dicta cumque.
-                                    </p>
-                                    <a href="#!" class="btn btn-main">Add To Cart</a>
-                                    <a href="#!" class="btn btn-transparent">View Product Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <footer class="footer section text-center">
-
-        </footer>
         <!-- 
         Essential Scripts
         =====================================-->
